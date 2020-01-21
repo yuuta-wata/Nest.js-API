@@ -1,7 +1,8 @@
-import { Field, ObjectType, ID } from 'type-graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
+
 // データ転送オブジェクト
 @ObjectType()
-export class CreateUserDto {
+export class RegisterDto {
   @Field(() => ID)
   readonly id: number;
 

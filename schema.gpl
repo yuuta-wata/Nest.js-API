@@ -3,23 +3,29 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-type CreateUserDto {
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  register(date: RegisterInput!): RegisterDto!
+  login(login: LoginInput!): [RegisterDto!]!
+}
+
+type Query {
+  user: [RegisterDto!]!
+}
+
+type RegisterDto {
   id: ID!
   userName: String!
   email: String!
   password: String!
 }
 
-input inputUser {
+input RegisterInput {
   userName: String!
   email: String!
   password: String!
-}
-
-type Mutation {
-  createUser(date: inputUser!): CreateUserDto!
-}
-
-type Query {
-  user: [CreateUserDto!]!
 }
