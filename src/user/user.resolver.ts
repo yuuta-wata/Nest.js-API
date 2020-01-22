@@ -14,6 +14,12 @@ export class UserResolver {
   async user() {
     return this.userService.findAll();
   }
+  // ログインユーザー
+  @Query(() => RegisterDto, { nullable: true })
+  async me(@Context() ctx: MyContext): Promise<User | null> {
+    return this.userService.me(ctx);
+  }
+
   // ユーザー登録
   @Mutation(() => RegisterDto)
   async register(@Args('date') input: RegisterInput) {
@@ -21,11 +27,11 @@ export class UserResolver {
   }
 
   // ログイン
-  @Mutation(() => [RegisterDto], { nullable: true })
+  @Mutation(() => RegisterDto, { nullable: true })
   async login(
     @Args('login') loginInput: LoginInput,
     @Context() ctx: MyContext,
   ): Promise<User | null> {
-    return this.userService.login(loginInput, ctx.req);
+    return this.userService.login(loginInput, ctx);
   }
 }

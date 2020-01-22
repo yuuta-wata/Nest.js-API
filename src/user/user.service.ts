@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/User.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { LoginInput } from './input/login.input';
 import { RegisterInput } from './input/register.input';
-import { Request } from 'express';
+import { MyContext } from './types/myContext';
 
 @Injectable()
 export class UserService {
@@ -18,7 +18,16 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  // 非同期処理でユーザーを登録するregisterメソッドを作成、入力タイプはRegisterInputから受け取ってる
+  // ログインユーザー
+  async me(ctx: MyContext): Promise<User | undefined> {
+    if (!ctx.req.session!.userId) {
+      return undefined;
+    }
+    console.log(ctx.req.session!.userId);
+    return this.userRepository.findOne(ctx.req.session!.userId);
+  }
+
+  // ユーザー登録
   async register({ userName, email, password }: RegisterInput): Promise<User> {
     // ハッシュ関数を生成
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -32,8 +41,8 @@ export class UserService {
     return user;
   }
 
-  // ログインメソッド
-  async login(loginInput: LoginInput, req: Request): Promise<User | null> {
+  // ログイン
+  async login(loginInput: LoginInput, ctx: MyContext): Promise<User | null> {
     const user = await this.userRepository.findOne({
       where: { email: loginInput.email },
     });
@@ -48,7 +57,7 @@ export class UserService {
       return null;
     }
     // emailとpasswordが一致したらリクエストセッションを行い、ログイン
-    req.session!.userId = user.id;
+    ctx.req.session!.userId = user.id;
 
     return user;
   }

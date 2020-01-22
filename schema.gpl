@@ -10,11 +10,12 @@ input LoginInput {
 
 type Mutation {
   register(date: RegisterInput!): RegisterDto!
-  login(login: LoginInput!): [RegisterDto!]!
+  login(login: LoginInput!): RegisterDto
 }
 
 type Query {
   user: [RegisterDto!]!
+  me: RegisterDto
 }
 
 type RegisterDto {
