@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRoot(),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gpl',
+      context: ({ req, res }: any) => ({ req, res }),
     }),
     UserModule,
   ],
